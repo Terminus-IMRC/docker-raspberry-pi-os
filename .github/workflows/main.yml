@@ -31,10 +31,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Generate armhf image
         if: ${{ matrix.url-armhf != '' }}
-        run: bash generate-root.bash "$IMAGE-armhf" '${{ matrix.url-armhf }}'
+        run: |
+          bash generate-root.bash "$IMAGE-armhf" '${{ matrix.url-armhf }}'
+          docker push "$IMAGE-armhf"
       - name: Generate arm64 image
         if: ${{ matrix.url-arm64 != '' }}
-        run: bash generate-root.bash "$IMAGE-arm64" '${{ matrix.url-arm64 }}'
+        run: |
+          bash generate-root.bash "$IMAGE-arm64" '${{ matrix.url-arm64 }}'
+          docker push "$IMAGE-arm64"
       - name: Merge the images
         run: |
           ifany() { [ -n "$1" ] && echo "$2"; }
