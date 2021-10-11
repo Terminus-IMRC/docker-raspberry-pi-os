@@ -1,0 +1,12 @@
+on: push
+
+jobs:
+
+  hello-world:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:buster-slim
+      options: --platform=linux/arm/v7
+    steps:
+      - name: Hello world
+        run: uname -a
