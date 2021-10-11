@@ -11,31 +11,32 @@ jobs:
         include:
 
           - release: buster
-            body: lite
             date: 20210507
-            platforms: [armhf, arm64]
+            body: lite
             url-armhf: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
             url-arm64: https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2021-05-28/2021-05-07-raspios-buster-arm64-lite.zip
 
+    env:
+      IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Generate root image
-        run: bash generate-root.bash '${{ matrix.url-armhf }}' '${{ matrix.url-arm64 }}'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v1
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          platforms: ${{ matrix.platforms }}
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.date }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate armhf image
+        if: ${{ matrix.url-armhf != '' }}
+        run: bash generate-root.bash "$IMAGE-armhf" '${{ matrix.url-armhf }}'
+      - name: Generate arm64 image
+        if: ${{ matrix.url-arm64 != '' }}
+        run: bash generate-root.bash "$IMAGE-arm64" '${{ matrix.url-arm64 }}'
+      - name: Merge the images
+        run: |
+          ifany() { [ -n "$1" ] && echo "$2" }
+          docker manifest create "$IMAGE" $(ifany '${{ matrix.url-armhf }}' "$IMAGE-armhf") $(ifany '${{ matrix.url-arm64 }}' "$IMAGE-arm64")
+          docker manifest push --purge "$IMAGE"
