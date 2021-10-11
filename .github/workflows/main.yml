@@ -6,9 +6,25 @@ jobs:
 
   hello-world:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - release: buster
+          - body: lite
+          - date: 20210507
+          - platform: linux/arm/v6
+          - url: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
+        include:
+          - release: buster
+          - body: lite
+          - date: 20210507
+          - platform: linux/arm64/v8
+          - url: https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2021-05-28/2021-05-07-raspios-buster-arm64-lite.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Generate root image
+        run: bash generate-root.bash '${{ matrix.url }}'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Buildx
@@ -23,7 +39,6 @@ jobs:
         with:
           context: .
           push: true
-          build-args: |
-            myarg=abc
-          platforms: linux/arm/v6
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:latest
+          platforms: ${{ matrix.platform }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.date }}
