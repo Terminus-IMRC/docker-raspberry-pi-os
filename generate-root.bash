@@ -6,7 +6,7 @@ URL="$1"
 BASENAME="${URL##*/}"
 BASENAME="${BASENAME%.zip}"
 
-#curl -LO "$URL"
+curl -LO "$URL"
 
 if curl -LO "$URL.sig"; then
 	curl -LO 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key'
