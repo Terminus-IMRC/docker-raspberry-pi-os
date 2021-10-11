@@ -14,11 +14,11 @@ fi
 BASENAME="${URL##*/}"
 BASENAME="${BASENAME%.zip}"
 
+curl -L 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key' | gpg --import -
+
 curl -LO "$URL"
 
 if curl -LO "$URL.sig"; then
-	curl -LO 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key'
-	gpg --import 'raspberrypi_downloads.gpg.key'
 	gpg --verify "$BASENAME.zip.sig" "$BASENAME.zip"
 	rm "$BASENAME.zip.sig"
 fi

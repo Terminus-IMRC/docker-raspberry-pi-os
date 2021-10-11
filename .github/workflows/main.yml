@@ -37,6 +37,6 @@ jobs:
         run: bash generate-root.bash "$IMAGE-arm64" '${{ matrix.url-arm64 }}'
       - name: Merge the images
         run: |
-          ifany() { [ -n "$1" ] && echo "$2" }
+          ifany() { [ -n "$1" ] && echo "$2"; }
           docker manifest create "$IMAGE" $(ifany '${{ matrix.url-armhf }}' "$IMAGE-armhf") $(ifany '${{ matrix.url-arm64 }}' "$IMAGE-arm64")
           docker manifest push --purge "$IMAGE"
