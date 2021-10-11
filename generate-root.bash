@@ -30,9 +30,9 @@ PART1_SIZE=$(partx -bgr -o SIZE -n 1 "$BASENAME.img")
 PART2_SIZE=$(partx -bgr -o SIZE -n 2 "$BASENAME.img")
 
 mkdir mnt/
-mount -o "ro,loop,offset=$PART2_START,sizelimit=$PART2_SIZE" "$BASENAME.img" mnt/
-mount -o "ro,loop,offset=$PART1_START,sizelimit=$PART1_SIZE" "$BASENAME.img" mnt/boot/
+sudo mount -o "ro,loop,offset=$PART2_START,sizelimit=$PART2_SIZE" "$BASENAME.img" mnt/
+sudo mount -o "ro,loop,offset=$PART1_START,sizelimit=$PART1_SIZE" "$BASENAME.img" mnt/boot/
 
-tar Ccf mnt/ - . > root.tar
+sudo tar Ccf mnt/ - . > root.tar
 
-umount mnt/boot/ mnt/
+sudo umount mnt/boot/ mnt/
