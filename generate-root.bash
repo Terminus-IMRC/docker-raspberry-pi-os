@@ -48,7 +48,7 @@ mkdir mnt/
 sudo mount -o "ro,loop,offset=$((PART2_START * 512)),sizelimit=$PART2_SIZE" -t ext4 "$BASENAME.img" mnt/
 sudo mount -o "ro,loop,offset=$((PART1_START * 512)),sizelimit=$PART1_SIZE" -t vfat "$BASENAME.img" mnt/boot/
 
-sudo tar Ccf mnt/ - . > "root-$ARCH.tar"
+sudo tar Ccf mnt/ "root-$ARCH.tar" .
 DOCKER_BUILDKIT=1 docker build --platform "$PLATFORM" -t "$IMAGE" .
 #sudo tar Ccf mnt/ - . | docker import --change 'CMD ["bash"]' --platform "$PLATFORM" - "$IMAGE"
 
