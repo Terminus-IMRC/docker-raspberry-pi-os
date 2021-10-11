@@ -47,7 +47,7 @@ jobs:
           context: .
           platforms: linux/arm/v6,linux/arm64/v8
           push: true
-          tags: $IMAGE
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }}
       - name: Merge images
         run: |
           set -x
