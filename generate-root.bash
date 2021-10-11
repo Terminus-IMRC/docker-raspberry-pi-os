@@ -6,8 +6,10 @@ IMAGE="$1"
 URL="$2"
 
 if [[ $IMAGE = *-armhf ]]; then
+	ARCH='armhf'
 	PLATFORM='linux/arm32/v6'
 else
+	ARCH='arm64'
 	PLATFORM='linux/arm64/v8'
 fi
 
@@ -46,6 +48,7 @@ mkdir mnt/
 sudo mount -o "ro,loop,offset=$((PART2_START * 512)),sizelimit=$PART2_SIZE" -t ext4 "$BASENAME.img" mnt/
 sudo mount -o "ro,loop,offset=$((PART1_START * 512)),sizelimit=$PART1_SIZE" -t vfat "$BASENAME.img" mnt/boot/
 
+export DOCKER_BUILDKIT=1
 sudo tar Ccf mnt/ - . | docker import --change 'CMD ["/bin/bash"]' --platform "$PLATFORM" - "$IMAGE"
 
 sudo umount mnt/boot/ mnt/

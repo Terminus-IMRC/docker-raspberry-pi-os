@@ -18,7 +18,6 @@ jobs:
 
     env:
       IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }}
-      DOCKER_BUILDKIT: 1
 
     steps:
       - name: Set up QEMU
