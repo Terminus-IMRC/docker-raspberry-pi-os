@@ -49,7 +49,7 @@ sudo mount -o "ro,loop,offset=$((PART2_START * 512)),sizelimit=$PART2_SIZE" -t e
 sudo mount -o "ro,loop,offset=$((PART1_START * 512)),sizelimit=$PART1_SIZE" -t vfat "$BASENAME.img" mnt/boot/
 
 sudo tar Ccf mnt/ "root-$ARCH.tar" .
-docker buildx build --platform "$PLATFORM" --tag "$IMAGE" .
+#docker buildx build --platform "$PLATFORM" --tag "$IMAGE" .
 #DOCKER_BUILDKIT=1 docker build --platform "$PLATFORM" -t "$IMAGE" .
 
 sudo umount mnt/boot/ mnt/
