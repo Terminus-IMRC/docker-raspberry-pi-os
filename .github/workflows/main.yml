@@ -33,14 +33,22 @@ jobs:
         if: ${{ matrix.url-armhf != '' }}
         run: |
           bash generate-root.bash "$IMAGE-armhf" '${{ matrix.url-armhf }}'
+          docker inspect "$IMAGE-armhf"
           docker push "$IMAGE-armhf"
       - name: Generate arm64 image
         if: ${{ matrix.url-arm64 != '' }}
         run: |
           bash generate-root.bash "$IMAGE-arm64" '${{ matrix.url-arm64 }}'
+          docker inspect "$IMAGE-arm64"
           docker push "$IMAGE-arm64"
       - name: Merge the images
         run: |
+          [ -n '${{ matrix.url-armhf }}' ] && do_armhf=1
+          [ -n '${{ matrix.url-arm64 }}' ] && do_arm64=1
           ifany() { [ -n "$1" ] && echo "$2"; }
           docker manifest create "$IMAGE" $(ifany '${{ matrix.url-armhf }}' "$IMAGE-armhf") $(ifany '${{ matrix.url-arm64 }}' "$IMAGE-arm64")
+          docker inspect "$IMAGE"
+          [ -n "$do_armhf" ] && docker manifest annotate "$IMAGE" "$IMAGE-armhf" --os linux --arch arm --variant v6
+          [ -n "$do_arm64" ] && docker manifest annotate "$IMAGE" "$IMAGE-arm64" --os linux --arch arm64 --variant v8
+          docker inspect "$IMAGE"
           docker manifest push --purge "$IMAGE"
