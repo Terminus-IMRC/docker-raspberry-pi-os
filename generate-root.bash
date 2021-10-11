@@ -16,21 +16,21 @@ fi
 BASENAME="${URL##*/}"
 BASENAME="${BASENAME%.zip}"
 
-curl -L 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key' | gpg --import -
+curl -fL 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key' | gpg --import -
 
-curl -LO "$URL"
+curl -fLO "$URL"
 
-if curl -LO "$URL.sig"; then
+if curl -fLO "$URL.sig"; then
 	gpg --verify "$BASENAME.zip.sig" "$BASENAME.zip"
 	rm "$BASENAME.zip.sig"
 fi
 
-if curl -LO "$URL.sha1"; then
+if curl -fLO "$URL.sha1"; then
 	sha1sum -c "$BASENAME.zip.sha1"
 	rm "$BASENAME.zip.sha1"
 fi
 
-if curl -LO "$URL.sha256"; then
+if curl -fLO "$URL.sha256"; then
 	sha256sum -c "$BASENAME.zip.sha256"
 	rm "$BASENAME.zip.sha256"
 fi
