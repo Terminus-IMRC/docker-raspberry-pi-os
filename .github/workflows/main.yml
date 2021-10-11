@@ -13,8 +13,8 @@ jobs:
           - release: buster
             date: 20210507
             body: lite
-            url-armhf: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
-            url-arm64: https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2021-05-28/2021-05-07-raspios-buster-arm64-lite.zip
+            url-armhf: http://imrc.noip.me/data/2021-05-07-raspios-buster-armhf-lite.zip
+            url-arm64: http://imrc.noip.me/data/2021-05-07-raspios-buster-arm64-lite.zip
 
     env:
       IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }}

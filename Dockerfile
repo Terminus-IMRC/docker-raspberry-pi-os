@@ -1,4 +1,5 @@
-FROM scratch
+FROM --platform=$TARGETPLATFORM scratch
 ARG TARGETPLATFORM
-ADD root-$TARGETPLATFORM.tar /
-CMD ["/bin/bash"]
+ARG TARGETARCH
+ADD root-$TARGETARCH.tar /
+CMD ["bash"]
