@@ -43,11 +43,11 @@ jobs:
           docker push "$IMAGE-arm64"
       - name: Merge the images
         run: |
+          set -x
           [ -n '${{ matrix.url-armhf }}' ] && do_armhf=1
           [ -n '${{ matrix.url-arm64 }}' ] && do_arm64=1
           ifany() { [ -n "$1" ] && echo "$2"; }
           docker manifest create "$IMAGE" $(ifany '${{ matrix.url-armhf }}' "$IMAGE-armhf") $(ifany '${{ matrix.url-arm64 }}' "$IMAGE-arm64")
-          docker inspect "$IMAGE"
           [ -n "$do_armhf" ] && docker manifest annotate "$IMAGE" "$IMAGE-armhf" --os linux --arch arm --variant v6
           [ -n "$do_arm64" ] && docker manifest annotate "$IMAGE" "$IMAGE-arm64" --os linux --arch arm64 --variant v8
           docker inspect "$IMAGE"
