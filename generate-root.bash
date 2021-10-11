@@ -51,7 +51,6 @@ sudo mount -o "ro,loop,offset=$((PART1_START * 512)),sizelimit=$PART1_SIZE" -t v
 sudo tar Ccf mnt/ "root-$ARCH.tar" .
 docker buildx build --platform "$PLATFORM" --tag "$IMAGE" .
 #DOCKER_BUILDKIT=1 docker build --platform "$PLATFORM" -t "$IMAGE" .
-#sudo tar Ccf mnt/ - . | docker import --change 'CMD ["bash"]' --platform "$PLATFORM" - "$IMAGE"
 
 sudo umount mnt/boot/ mnt/
 rmdir mnt/
