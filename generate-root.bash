@@ -37,6 +37,7 @@ for URL in "$URL_ARMHF" "$URL_ARM64"; do
 	fi
 
 	unzip "$BASENAME.zip"
+	rm "$BASENAME.zip"
 
 	partx -bs "$BASENAME.img"
 	PART1_START=$(partx -bgr -o START -n 1 "$BASENAME.img")
@@ -51,5 +52,7 @@ for URL in "$URL_ARMHF" "$URL_ARM64"; do
 	sudo tar Ccf mnt/ - . > "root-$ARCH.tar"
 
 	sudo umount mnt/boot/ mnt/
+	rmdir mnt/
+	rm "$BASENAME.img"
 
 done
