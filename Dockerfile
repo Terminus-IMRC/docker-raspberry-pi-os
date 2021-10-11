@@ -1,3 +1,4 @@
 FROM scratch
-ADD root.tar /
+ARG TARGETPLATFORM
+ADD root-$TARGETPLATFORM.tar /
 CMD ["/bin/bash"]
