@@ -2,21 +2,11 @@
 
 set -e -u -x -o pipefail
 
-IMAGE="$1"
+ARCH="$1"
 URL="$2"
-
-if [[ $IMAGE = *-armhf ]]; then
-	ARCH='arm'
-	PLATFORM='linux/arm/v6'
-else
-	ARCH='arm64'
-	PLATFORM='linux/arm64/v8'
-fi
 
 BASENAME="${URL##*/}"
 BASENAME="${BASENAME%.zip}"
-
-curl -fL 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key' | gpg --import -
 
 curl -fLO "$URL"
 
@@ -49,8 +39,6 @@ sudo mount -o "ro,loop,offset=$((PART2_START * 512)),sizelimit=$PART2_SIZE" -t e
 sudo mount -o "ro,loop,offset=$((PART1_START * 512)),sizelimit=$PART1_SIZE" -t vfat "$BASENAME.img" mnt/boot/
 
 sudo tar Ccf mnt/ "root-$ARCH.tar" .
-#docker buildx build --platform "$PLATFORM" --tag "$IMAGE" .
-#DOCKER_BUILDKIT=1 docker build --platform "$PLATFORM" -t "$IMAGE" .
 
 sudo umount mnt/boot/ mnt/
 rmdir mnt/
