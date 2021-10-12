@@ -10,17 +10,18 @@ jobs:
       matrix:
         include:
 
-          - release: buster
+          - releases: buster,stable
             date: 20210507
             body: lite
             url-armhf: http://imrc.noip.me/data/2021-05-07-raspios-buster-armhf-lite.zip
             url-arm64: http://imrc.noip.me/data/2021-05-07-raspios-buster-arm64-lite.zip
             additional-tags: buster-lite,stable-lite,latest
 
-          - release: stretch
+          - releases: stretch,oldstable
             date: 20190408
             body: lite
             url-armhf: http://imrc.noip.me/data/2019-04-08-raspbian-stretch-lite.zip
+            additional-tags: stretch-lite,oldstable-lite
 
     steps:
       - name: List platforms
@@ -35,9 +36,9 @@ jobs:
         id: tags
         run: |
           IFS=,
-          echo '${{ matrix.additional-tags }}'
+          read -r -a releases <<< '${{ matrix.releases }}'
           read -r -a list <<< '${{ matrix.additional-tags }}'
-          list=(${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }} "${list[@]}")
+          list=("${releases[@]/%/-${{ matrix.date }}-${{ matrix.body }}}" "${list[@]}")
           echo "Tags: ${list[@]}"
           echo "::set-output name=list::${list[*]/#/${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:}"
 
