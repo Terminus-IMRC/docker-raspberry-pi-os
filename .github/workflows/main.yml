@@ -15,7 +15,7 @@ jobs:
             body: lite
             url-armhf: http://imrc.noip.me/data/2021-05-07-raspios-buster-armhf-lite.zip
             url-arm64: http://imrc.noip.me/data/2021-05-07-raspios-buster-arm64-lite.zip
-            additional-tags: [buster-lite, stable-lite, latest]
+            additional-tags: buster-lite,stable-lite,latest
 
           - release: stretch
             date: 20190408
@@ -26,18 +26,19 @@ jobs:
       - name: List platforms
         id: platforms
         run: |
+          IFS=,
           [ -n '${{ matrix.url-armhf }}' ] && list+=(linux/arm/v6)
           [ -n '${{ matrix.url-arm64 }}' ] && list+=(linux/arm64)
-          echo "Platforms: ${list[*]}"
-          IFS=,
+          echo "Platforms: ${list[@]}"
           echo "::set-output name=list::${list[*]}"
       - name: List tags
         id: tags
         run: |
-          list+=(${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }})
-          echo '${{ matrix.additional-tags }}'
-          echo "Tags: ${list[*]}"
           IFS=,
+          echo '${{ matrix.additional-tags }}'
+          read -r -a list <<< '${{ matrix.additional-tags }}'
+          list=(${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }} "${list[@]}")
+          echo "Tags: ${list[@]}"
           echo "::set-output name=list::${list[*]/#/${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:}"
 
       - name: Import Raspberry Pi Foundation's PGP key
