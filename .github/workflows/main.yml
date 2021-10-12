@@ -15,10 +15,43 @@ jobs:
             body: lite
             url-armhf: http://imrc.noip.me/data/2021-05-07-raspios-buster-armhf-lite.zip
             url-arm64: http://imrc.noip.me/data/2021-05-07-raspios-buster-arm64-lite.zip
+            additional-tags: [buster-lite, stable-lite, latest]
+
+          - release: stretch
+            date: 20190408
+            body: lite
+            url-armhf: http://imrc.noip.me/data/2019-04-08-raspbian-stretch-lite.zip
 
     steps:
+      - name: List platforms
+        id: platforms
+        run: |
+          [ -n '${{ matrix.url-armhf }}' ] && list+=(linux/arm/v6)
+          [ -n '${{ matrix.url-arm64 }}' ] && list+=(linux/arm64)
+          echo "Platforms: ${list[*]}"
+          IFS=,
+          echo "::set-output name=list::${list[*]}"
+      - name: List tags
+        id: tags
+        run: |
+          list+=(${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }})
+          echo '${{ matrix.additional-tags }}'
+          echo "Tags: ${list[*]}"
+          IFS=,
+          echo "::set-output name=list::${list[*]/#/${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:}"
+
       - name: Import Raspberry Pi Foundation's PGP key
         run: curl -fL 'https://www.raspberrypi.org/raspberrypi_downloads.gpg.key' | gpg --import -
+
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate armhf root image
+        if: ${{ matrix.url-armhf != '' }}
+        run: bash generate-root.bash 'arm' '${{ matrix.url-armhf }}'
+      - name: Generate arm64 root image
+        if: ${{ matrix.url-arm64 != '' }}
+        run: bash generate-root.bash 'arm64' '${{ matrix.url-arm64 }}'
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Buildx
@@ -28,26 +61,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Generate armhf image
-        if: ${{ matrix.url-armhf != '' }}
-        run: bash generate-root.bash 'arm' '${{ matrix.url-armhf }}'
-      - name: Generate arm64 image
-        if: ${{ matrix.url-arm64 != '' }}
-        run: bash generate-root.bash 'arm64' '${{ matrix.url-arm64 }}'
-      - name: List platforms
-        id: platforms
-        run: |
-          [ -n '${{ matrix.url-armhf }}' ] && list+=(linux/arm/v6)
-          [ -n '${{ matrix.url-arm64 }}' ] && list+=(linux/arm64)
-          echo "Platforms: ${list[*]}"
-          IFS=','
-          echo "::set-output name=list::${list[*]}"
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: ${{ steps.platforms.outputs.list }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/raspberry-pi-os:${{ matrix.release }}-${{ matrix.date }}-${{ matrix.body }}
+          tags: ${{ steps.tags.outputs.list }}
