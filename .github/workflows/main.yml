@@ -10,18 +10,25 @@ jobs:
       matrix:
         include:
 
-          - releases: buster,stable
+          - releases: bullseye,stable
+            date: 20211030
+            body: lite
+            url-armhf: http://imrc.noip.me/rpi/img/2021-10-30-raspios-bullseye-armhf-lite.zip
+            url-arm64: http://imrc.noip.me/rpi/img/2021-10-30-raspios-bullseye-arm64-lite.zip
+            additional-tags: bullseye-lite,stable-lite,latest
+
+          - releases: buster,oldstable
             date: 20210507
             body: lite
-            url-armhf: http://imrc.noip.me/data/2021-05-07-raspios-buster-armhf-lite.zip
-            url-arm64: http://imrc.noip.me/data/2021-05-07-raspios-buster-arm64-lite.zip
-            additional-tags: buster-lite,stable-lite,latest
+            url-armhf: http://imrc.noip.me/rpi/img/2021-05-07-raspios-buster-armhf-lite.zip
+            url-arm64: http://imrc.noip.me/rpi/img/2021-05-07-raspios-buster-arm64-lite.zip
+            additional-tags: buster-lite,oldstable-lite,latest
 
-          - releases: stretch,oldstable
+          - releases: stretch,oldoldstable
             date: 20190408
             body: lite
-            url-armhf: http://imrc.noip.me/data/2019-04-08-raspbian-stretch-lite.zip
-            additional-tags: stretch-lite,oldstable-lite
+            url-armhf: http://imrc.noip.me/rpi/img/2019-04-08-raspbian-stretch-lite.zip
+            additional-tags: stretch-lite,oldoldstable-lite
 
     steps:
       - name: List platforms
