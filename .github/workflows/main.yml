@@ -11,11 +11,17 @@ jobs:
         include:
 
           - releases: bullseye,stable
+            date: 20220128
+            body: lite
+            url-armhf: http://imrc.noip.me/rpi/img/2022-01-28-raspios-bullseye-armhf-lite.zip
+            url-arm64: http://imrc.noip.me/rpi/img/2022-01-28-raspios-bullseye-arm64-lite.zip
+            additional-tags: bullseye-lite,stable-lite,latest
+
+          - releases: bullseye
             date: 20211030
             body: lite
             url-armhf: http://imrc.noip.me/rpi/img/2021-10-30-raspios-bullseye-armhf-lite.zip
             url-arm64: http://imrc.noip.me/rpi/img/2021-10-30-raspios-bullseye-arm64-lite.zip
-            additional-tags: bullseye-lite,stable-lite,latest
 
           - releases: buster,oldstable
             date: 20210507
