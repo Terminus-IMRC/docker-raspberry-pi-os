@@ -24,10 +24,15 @@ jobs:
             url-arm64: http://imrc.noip.me/rpi/img/2021-10-30-raspios-bullseye-arm64-lite.zip
 
           - releases: buster,oldstable
+            date: 20220128
+            body: lite
+            url-armhf: http://imrc.noip.me/rpi/img/2022-01-28-raspios-buster-armhf-lite.zip
+            additional-tags: buster-lite,oldstable-lite
+
+          - releases: buster
             date: 20211202
             body: lite
             url-armhf: http://imrc.noip.me/rpi/img/2021-12-02-raspios-buster-armhf-lite.zip
-            additional-tags: buster-lite,oldstable-lite,latest
 
           - releases: buster
             date: 20210507
